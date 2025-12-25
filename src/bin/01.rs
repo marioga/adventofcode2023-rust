@@ -6,7 +6,7 @@ fn line_to_value_builder<'a>(mapping: &'a HashMap<String, u8>) -> impl Fn(&str) 
     move |line: &str| {
         let indices = mapping
             .iter()
-            .flat_map(|(&ref s, digit)| line.match_indices(s).map(move |(idx, _)| (idx, digit)));
+            .flat_map(|(s, digit)| line.match_indices(s).map(move |(idx, _)| (idx, digit)));
         let mut first: Option<(usize, &u8)> = None;
         let mut last: Option<(usize, &u8)> = None;
         for (idx, digit) in indices {
@@ -21,7 +21,6 @@ fn line_to_value_builder<'a>(mapping: &'a HashMap<String, u8>) -> impl Fn(&str) 
                 Some((last_idx, _)) if idx > last_idx => last = Some((idx, digit)),
                 _ => {}
             }
-
         }
         (10 * first.unwrap().1 + last.unwrap().1).into()
     }
